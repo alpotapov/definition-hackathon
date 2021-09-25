@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useDebounce } from 'use-debounce';
 import { InputLabel, Select, MenuItem, TextField, Button } from '@mui/material';
 import SyncIcon from '@mui/icons-material/Sync';
 
@@ -19,6 +20,7 @@ const TradeSettings = () => {
     setSellToken(evt.target.value);
   };
   const [sellTokenValue, setSellTokenValue] = useState(0);
+  const [sellTokenValueDebounced] = useDebounce(sellTokenValue, 1000);
   const onSellTokenValueChange = (evt) => {
     setSellTokenValue(evt.target.value);
   };
@@ -34,12 +36,12 @@ const TradeSettings = () => {
   };
 
   useEffect(() => {
-    if (!sellToken || !sellTokenValue || !buyToken) return;
+    if (!sellToken || !sellTokenValueDebounced || !buyToken) return;
 
-    getPrice(sellTokenValue, sellToken, buyToken).then((price) =>
+    getPrice(sellTokenValueDebounced, sellToken, buyToken).then((price) =>
       setBuyTokenValue(price)
     );
-  }, [sellTokenValue, sellToken, buyToken]);
+  }, [sellTokenValueDebounced, sellToken, buyToken]);
 
   return (
     <div className="TradeSettings">

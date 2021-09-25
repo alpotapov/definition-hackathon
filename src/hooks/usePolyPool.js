@@ -4,7 +4,7 @@ import useWeb3 from './useWeb3';
 
 import PolyPoolABI from './polypool.json';
 
-const polyPoolAddress = '0x25A199D32c2EA48730e392ad22AB307D75bF8FF0';
+const polyPoolAddress = '0x8Bc9C1629f41b7126DC2Af1A734332Cbe8144680';
 
 const usePolyPool = () => {
   const { web3 } = useWeb3();
