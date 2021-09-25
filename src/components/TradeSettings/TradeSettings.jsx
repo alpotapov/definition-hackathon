@@ -1,18 +1,42 @@
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
+import { client } from 'defi-sdk';
 import { InputLabel, Select, MenuItem, TextField, Button } from '@mui/material';
 import SyncIcon from '@mui/icons-material/Sync';
 
-// import usePoolList from '../../hooks/usePoolList';
 import usePolyPool from '../../hooks/usePolyPool';
 
 import './TradeSettings.css';
+
+export const endpoint = 'wss://api.zerion.io';
+export const API_TOKEN = 'Demo.ukEVQp6L5vfgxcz4sBke7XvS873GMYHy';
+
+client.configure({
+  url: endpoint,
+  apiToken: API_TOKEN,
+});
+Object.assign(window, { client });
 
 const TradeSettings = () => {
   // eslint-disable-next-line
   // const { poolList } = usePoolList();
   // eslint-disable-next-line
   const { shareList, getPrice } = usePolyPool();
+
+  client.subscribe({
+    namespace: 'assets',
+    body: {
+      scope: ['prices'],
+      payload: { asset_codes: ['eth'], currency: 'usd' },
+    },
+    onMessage: (event, data) => {
+      console.log({ event, data });
+    },
+  });
+
+  // useEffect(() => {
+  //   console.log({ assets });
+  // }, [assets]);
 
   const [sellToken, setSellToken] = useState('');
   const onSellTokenChange = (evt) => {
