@@ -6,10 +6,6 @@ import LiquidityPage from './pages/LiquidityPage/LiquidityPage';
 
 import './App.css';
 import logo from './assets/logo.svg';
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
 
 export default function App() {
   return (
@@ -21,17 +17,22 @@ export default function App() {
           </div>
           <div className="Header-separator" />
           <nav className="Header-navigation">
-            <Link to="/">Create Swap</Link>
-            <Link to="/liquidity">Liquidity</Link>
-            <Link to="/trade">Trade</Link>
-            <Link to="/action">Action</Link>
+            <Link className="Header-link" to="/">
+              Create Swap11
+            </Link>
+            <Link className="Header-link" to="/liquidity">
+              Liquidity
+            </Link>
+            <Link className="Header-link" to="/trade">
+              Trade
+            </Link>
+            <Link className="Header-link" to="/action">
+              Action
+            </Link>
           </nav>
         </div>
 
         <Switch>
-          <Route path="/">
-            <CreateSwapPage />
-          </Route>
           <Route path="/liquidity">
             <LiquidityPage />
           </Route>
@@ -40,6 +41,9 @@ export default function App() {
           </Route>
           <Route path="/action">
             <ActionPage />
+          </Route>
+          <Route path="/">
+            <CreateSwapPage />
           </Route>
         </Switch>
 
@@ -53,10 +57,6 @@ export default function App() {
   );
 }
 
-function TradePage() {
-  return <h2>Home</h2>;
-}
+const TradePage = () => <h2>Trade</h2>;
 
-function ActionPage() {
-  return <h2>About</h2>;
-}
+const ActionPage = () => <h2>Action</h2>;

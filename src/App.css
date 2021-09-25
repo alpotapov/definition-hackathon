@@ -1,4 +1,12 @@
+@font-face {
+  font-family: 'Montserrat';
+  src: local('Montserrat'), url(./assets/fonts/Montserrat-Regular.ttf) format('truetype');
+  /* other formats include: 'woff2', 'truetype, 'opentype',
+                            'embedded-opentype', and 'svg' */
+}
+
 .App {
+  font-family: Montserrat, sans-serif;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -10,7 +18,7 @@
 .Header {
   display: flex;
   flex-direction: column;
-  width: 100%;
+  
 }
 
 .Header-logoContainer {
@@ -29,6 +37,13 @@
   display: flex;
   flex-direction: row;
   justify-content: space-between;
+}
+
+.Header-link {
+  text-decoration: none;
+  font: normal normal normal 18px/22px Montserrat, sans-serif;
+  color: #000000;
+  margin: 0 40px 0 40px;
 }
 
 .Footer {
