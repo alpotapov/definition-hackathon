@@ -1,5 +1,6 @@
 import React from 'react';
 import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
+import { client } from 'defi-sdk';
 
 import CreateSwapPage from './pages/CreateSwapPage/CreateSwapPage';
 import LiquidityPage from './pages/LiquidityPage/LiquidityPage';
@@ -7,6 +8,15 @@ import TradePage from './pages/TradePage/TradePage';
 
 import './App.css';
 import logo from './assets/logo.svg';
+
+export const endpoint = 'wss://api.zerion.io';
+export const API_TOKEN = 'Demo.ukEVQp6L5vfgxcz4sBke7XvS873GMYHy';
+
+client.configure({
+  url: endpoint,
+  apiToken: API_TOKEN,
+});
+Object.assign(window, { client });
 
 export default function App() {
   return (
