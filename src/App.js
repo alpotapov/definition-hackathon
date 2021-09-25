@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from 'react-router-dom';
 
 import CreateSwapPage from './pages/CreateSwapPage/CreateSwapPage';
 import LiquidityPage from './pages/LiquidityPage/LiquidityPage';
+import TradePage from './pages/TradePage/TradePage';
 
 import './App.css';
 import logo from './assets/logo.svg';
@@ -18,7 +19,7 @@ export default function App() {
           <div className="Header-separator" />
           <nav className="Header-navigation">
             <Link className="Header-link" to="/">
-              Create Swap11
+              Create Swap
             </Link>
             <Link className="Header-link" to="/liquidity">
               Liquidity
@@ -37,7 +38,9 @@ export default function App() {
             <LiquidityPage />
           </Route>
           <Route path="/trade">
-            <TradePage />
+            <div className="Content">
+              <TradePage />
+            </div>
           </Route>
           <Route path="/action">
             <ActionPage />
@@ -56,7 +59,5 @@ export default function App() {
     </Router>
   );
 }
-
-const TradePage = () => <h2>Trade</h2>;
 
 const ActionPage = () => <h2>Action</h2>;

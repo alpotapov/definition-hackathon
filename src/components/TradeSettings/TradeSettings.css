@@ -1,0 +1,30 @@
+.TradeSettings {
+  background: #F8F8F8;
+  padding: 20px;
+}
+
+.TradeSettings-columns {
+  display: flex;
+  flex-direction: row;
+}
+
+.TradeSettings-sellColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+.TradeSettings-changeIconColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 0 20px 0 20px;
+}
+
+.TradeSettings-cta {
+  margin: 20px 0 0 0;
+}
+
+.TradeSettings-ctaButton {
+  width: 100%;
+}
