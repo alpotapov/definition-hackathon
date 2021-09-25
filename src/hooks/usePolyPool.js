@@ -31,6 +31,19 @@ const usePolyPool = () => {
     setShareList(shares);
   };
 
+  const getPrice = async (value, addressIn, addressOut) => {
+    const polyPoolContract = new web3.eth.Contract(
+      PolyPoolABI,
+      polyPoolAddress
+    );
+
+    const price = await polyPoolContract.methods
+      .getPrice(value, addressIn, addressOut)
+      .call();
+
+    return price;
+  };
+
   useEffect(() => {
     if (!web3) {
       return;
@@ -38,7 +51,7 @@ const usePolyPool = () => {
     fetchShareList();
   }, [web3]);
 
-  return { shareList };
+  return { shareList, getPrice };
 };
 
 export default usePolyPool;

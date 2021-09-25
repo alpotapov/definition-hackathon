@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InputLabel, Select, MenuItem, TextField, Button } from '@mui/material';
 import SyncIcon from '@mui/icons-material/Sync';
 
@@ -11,9 +11,9 @@ const TradeSettings = () => {
   // eslint-disable-next-line
   // const { poolList } = usePoolList();
   // eslint-disable-next-line
-  const { shareList } = usePolyPool();
+  const { shareList, getPrice } = usePolyPool();
 
-  const [sellToken, setSellToken] = useState('0xERC20IN');
+  const [sellToken, setSellToken] = useState('');
   const onSellTokenChange = (evt) => {
     console.log({ evt });
     setSellToken(evt.target.value);
@@ -22,11 +22,9 @@ const TradeSettings = () => {
   const onSellTokenValueChange = (evt) => {
     setSellTokenValue(evt.target.value);
   };
-  const [buyToken, setBuyToken] = useState('0xERC20OUT');
+  const [buyToken, setBuyToken] = useState('');
   const [buyTokenValue, setBuyTokenValue] = useState(0);
-  const onBuyTokenValueChange = (evt) => {
-    setBuyTokenValue(evt.target.value);
-  };
+
   const onBuyTokenChange = (evt) => {
     setBuyToken(evt.target.value);
   };
@@ -34,6 +32,15 @@ const TradeSettings = () => {
   const onAddressPoolChange = (evt) => {
     setAddressPool(evt.target.value);
   };
+
+  useEffect(() => {
+    if (!sellToken || !sellTokenValue || !buyToken) return;
+
+    getPrice(sellTokenValue, sellToken, buyToken).then((price) =>
+      setBuyTokenValue(price)
+    );
+  }, [sellTokenValue, sellToken, buyToken]);
+
   return (
     <div className="TradeSettings">
       <div>
@@ -61,7 +68,9 @@ const TradeSettings = () => {
                 {share}
               </MenuItem>
             ))}
-            <MenuItem value="0xERC20IN">0xERC20IN</MenuItem>
+            <MenuItem value="" disabled>
+              0xERC20IN
+            </MenuItem>
           </Select>
           <InputLabel id="sellTokenValue">Value</InputLabel>
           <TextField
@@ -88,14 +97,16 @@ const TradeSettings = () => {
                 {share}
               </MenuItem>
             ))}
-            <MenuItem value="0xERC20OUT">0xERC20OUT</MenuItem>
+            <MenuItem value="" disabled>
+              0xERC20OUT
+            </MenuItem>
           </Select>
           <InputLabel id="buyTokenValue">Value</InputLabel>
           <TextField
+            disabled
             id="buyTokenValue"
             variant="outlined"
             value={buyTokenValue}
-            onChange={onBuyTokenValueChange}
           />
         </div>
       </div>
