@@ -14,11 +14,25 @@
   justify-content: space-evenly;
 }
 
+#sellTokenSelect {
+  width: 80px;
+}
+
 .TradeSettings-changeIconColumn {
   display: flex;
   flex-direction: column;
   justify-content: center;
   margin: 0 20px 0 20px;
+}
+
+.TradeSettings-buyColumn {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-evenly;
+}
+
+#buyTokenSelect {
+  width: 80px;
 }
 
 .TradeSettings-prices {
