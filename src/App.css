@@ -1,8 +1,43 @@
 .App {
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
-  width: 100%;
+  /* width: 100%; */
   height: 100vh;
+}
+
+.Header {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.Header-logoContainer {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0 0 0;
+}
+
+.Header-separator {
+  height: 0;
+  border: 1px solid #000000;
+  margin: 40px 0 40px 0;
+}
+
+.Header-navigation {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.Footer {
+  width: 100%;
+  background: #000000;
+}
+
+.Footer-logoContainer {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0 40px 0;
 }
