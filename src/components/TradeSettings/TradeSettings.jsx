@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { InputLabel, Select, MenuItem, TextField, Button } from '@mui/material';
 import SyncIcon from '@mui/icons-material/Sync';
 
 // import usePoolList from '../../hooks/usePoolList';
-import useShareList from '../../hooks/useShareList';
+import usePolyPool from '../../hooks/usePolyPool';
 
 import './TradeSettings.css';
 
@@ -11,11 +11,7 @@ const TradeSettings = () => {
   // eslint-disable-next-line
   // const { poolList } = usePoolList();
   // eslint-disable-next-line
-  const { shareList } = useShareList();
-
-  useEffect(() => {
-    console.log({ shareList });
-  }, [shareList]);
+  const { shareList } = usePolyPool();
 
   const [sellToken, setSellToken] = useState('0xERC20IN');
   const onSellTokenChange = (evt) => {

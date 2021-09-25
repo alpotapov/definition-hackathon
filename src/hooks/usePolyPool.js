@@ -6,7 +6,7 @@ import PolyPoolABI from './polypool.json';
 
 const polyPoolAddress = '0x25A199D32c2EA48730e392ad22AB307D75bF8FF0';
 
-const usePoolList = () => {
+const usePolyPool = () => {
   const { web3 } = useWeb3();
   // eslint-disable-next-line
   const [shareList, setShareList] = useState([]);
@@ -41,4 +41,4 @@ const usePoolList = () => {
   return { shareList };
 };
 
-export default usePoolList;
+export default usePolyPool;
