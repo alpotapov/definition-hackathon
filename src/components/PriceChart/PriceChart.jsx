@@ -19,7 +19,7 @@ const PriceChart = () => {
   const [maxValue, setMaxValue] = useState(0);
 
   useEffect(() => {
-    client.subscribe({
+    const unsubscribe = client.subscribe({
       namespace: 'assets',
       body: {
         scope: ['charts'],
@@ -48,6 +48,8 @@ const PriceChart = () => {
         // setChartData(receivedChartData);
       },
     });
+
+    return unsubscribe;
   }, []);
 
   return (
