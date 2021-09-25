@@ -1,10 +1,22 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { InputLabel, Select, MenuItem, TextField, Button } from '@mui/material';
 import SyncIcon from '@mui/icons-material/Sync';
+
+// import usePoolList from '../../hooks/usePoolList';
+import useShareList from '../../hooks/useShareList';
 
 import './TradeSettings.css';
 
 const TradeSettings = () => {
+  // eslint-disable-next-line
+  // const { poolList } = usePoolList();
+  // eslint-disable-next-line
+  const { shareList } = useShareList();
+
+  useEffect(() => {
+    console.log({ shareList });
+  }, [shareList]);
+
   const [sellToken, setSellToken] = useState('0xERC20IN');
   const onSellTokenChange = (evt) => {
     console.log({ evt });
@@ -48,8 +60,12 @@ const TradeSettings = () => {
             label="Sell"
             onChange={onSellTokenChange}
           >
+            {shareList.map((share) => (
+              <MenuItem key={share} value={share}>
+                {share}
+              </MenuItem>
+            ))}
             <MenuItem value="0xERC20IN">0xERC20IN</MenuItem>
-            <MenuItem value="BTC">BTC</MenuItem>
           </Select>
           <InputLabel id="sellTokenValue">Value</InputLabel>
           <TextField
@@ -71,8 +87,12 @@ const TradeSettings = () => {
             label="Buy"
             onChange={onBuyTokenChange}
           >
+            {shareList.map((share) => (
+              <MenuItem key={share} value={share}>
+                {share}
+              </MenuItem>
+            ))}
             <MenuItem value="0xERC20OUT">0xERC20OUT</MenuItem>
-            <MenuItem value="BTC">BTC</MenuItem>
           </Select>
           <InputLabel id="buyTokenValue">Value</InputLabel>
           <TextField
