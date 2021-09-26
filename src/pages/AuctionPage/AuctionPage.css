@@ -18,3 +18,11 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+.AuctionPage-leftColumn {
+  flex-grow: 1;
+}
+
+.AuctionPage-rightColumn {
+  flex-grow: 1;
+}
