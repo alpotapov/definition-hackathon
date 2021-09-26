@@ -1,5 +1,7 @@
 import React from 'react';
 
+import Mockup from './LiquidityPageMockup.png';
+
 import './LiquidityPage.css';
 
 const LiquidityPage = () => (
@@ -8,7 +10,9 @@ const LiquidityPage = () => (
       Liqui<span className="LiquidityPage-titleColored">dity</span>
     </h2>
     <div className="LiquidityPage-columns">
-      <div className="LiquidityPage-leftColumn" />
+      <div className="LiquidityPage-leftColumn">
+        <img src={Mockup} alt="mockup" className="LiquidityPage-mockup" />
+      </div>
       <div className="LiquidityPage-rightColumn" />
     </div>
   </div>

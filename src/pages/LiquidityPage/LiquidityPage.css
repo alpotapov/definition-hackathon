@@ -18,3 +18,8 @@
   flex-direction: row;
   justify-content: space-between;
 }
+
+.LiquidityPage-mockup {
+  width: 450px;
+  margin: 50px 0 0 0;
+}
