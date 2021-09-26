@@ -121,6 +121,23 @@ const usePolyPool = () => {
     return result;
   };
 
+  const trade = async (value, addressIn, addressOut) => {
+    const polyPoolContract = new web3.eth.Contract(
+      PolyPoolABI,
+      polyPoolAddress
+    );
+
+    const accounts = await web3.eth.getAccounts();
+    const selectedAccount = accounts[0];
+
+    const result = await polyPoolContract.methods
+      .trade(value, addressIn, addressOut)
+      .send({ from: selectedAccount });
+
+    console.log({ result });
+    return result;
+  };
+
   useEffect(() => {
     if (!web3) {
       return;
@@ -139,6 +156,7 @@ const usePolyPool = () => {
     yourCurrentBid,
     doBid,
     approve,
+    trade,
   };
 };
 

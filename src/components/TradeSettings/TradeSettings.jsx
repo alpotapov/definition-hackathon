@@ -15,7 +15,7 @@ import usePolyPool from '../../hooks/usePolyPool';
 import './TradeSettings.css';
 
 const TradeSettings = () => {
-  const { shareList, getPrice } = usePolyPool();
+  const { shareList, getPrice, trade } = usePolyPool();
 
   const [sellToken, setSellToken] = useState('');
   const onSellTokenChange = (evt) => {
@@ -46,6 +46,11 @@ const TradeSettings = () => {
       setBuyTokenValue(price)
     );
   }, [sellTokenValueDebounced, sellToken, buyToken]);
+
+  const executeTrade = async () => {
+    const numSellTokenValue = Number.parseInt(sellTokenValueDebounced, 10);
+    await trade(numSellTokenValue, sellToken, buyToken);
+  };
 
   return (
     <div className="TradeSettings">
@@ -139,6 +144,7 @@ const TradeSettings = () => {
           className="TradeSettings-ctaButton"
           size="large"
           variant="contained"
+          onClick={executeTrade}
         >
           Change
         </Button>
