@@ -12,6 +12,7 @@ const usePolyPool = () => {
   const [isTrader, setIsTrader] = useState(false);
   const [maxBid, setMaxBid] = useState(0);
   const [yourCurrentBid, setYourCurrentBid] = useState(0);
+  const [equalizationData, setEqualizationData] = useState({});
 
   const fetchShareList = async () => {
     const polyPoolContract = new web3.eth.Contract(
@@ -122,6 +123,7 @@ const usePolyPool = () => {
   };
 
   const trade = async (value, addressIn, addressOut) => {
+    console.log({ value, addressIn, addressOut });
     const polyPoolContract = new web3.eth.Contract(
       PolyPoolABI,
       polyPoolAddress
@@ -138,6 +140,41 @@ const usePolyPool = () => {
     return result;
   };
 
+  const equalize = async () => {
+    const polyPoolContract = new web3.eth.Contract(
+      PolyPoolABI,
+      polyPoolAddress
+    );
+
+    const accounts = await web3.eth.getAccounts();
+    const selectedAccount = accounts[0];
+
+    await polyPoolContract.methods.equalize().send({ from: selectedAccount });
+  };
+
+  const calculateEqualizationData = async () => {
+    // block.number - equalizerBlock > settings[7]
+    const polyPoolContract = new web3.eth.Contract(
+      PolyPoolABI,
+      polyPoolAddress
+    );
+
+    const blockNumber = await web3.eth.getBlockNumber();
+    const equalizerBlock = await polyPoolContract.methods
+      .equalizerBlock()
+      .call();
+    const setting = await polyPoolContract.methods.settings(7).call();
+
+    const canEqualize = blockNumber - equalizerBlock > setting;
+
+    // const accounts = await web3.eth.getAccounts();
+    // const selectedAccount = accounts[0];
+
+    setEqualizationData({
+      canEqualize,
+    });
+  };
+
   useEffect(() => {
     if (!web3) {
       return;
@@ -146,6 +183,7 @@ const usePolyPool = () => {
     checkIsTrader();
     fetchMaxBid();
     fetchYourCurrentBid();
+    calculateEqualizationData();
   }, [web3]);
 
   return {
@@ -157,6 +195,8 @@ const usePolyPool = () => {
     doBid,
     approve,
     trade,
+    equalizationData,
+    equalize,
   };
 };
 

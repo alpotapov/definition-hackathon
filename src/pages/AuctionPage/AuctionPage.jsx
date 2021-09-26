@@ -10,7 +10,8 @@ import useSimpleErc20 from '../../hooks/useSimpleErc20';
 import './AuctionPage.css';
 
 const AuctionPage = () => {
-  const { maxBid, yourCurrentBid, doBid } = usePolyPool();
+  const { maxBid, yourCurrentBid, doBid, equalizationData, equalize } =
+    usePolyPool();
   const { approve } = useSimpleErc20();
 
   const [yourBid, setYourBid] = useState(0);
@@ -102,9 +103,11 @@ const AuctionPage = () => {
           <p>Equalize</p>
           <Button
             fullWidth
+            disabled={!equalizationData.canEqualize}
             className="AuctionPage-equalizeButton"
             size="large"
             variant="contained"
+            onClick={equalize}
           >
             Equalize
           </Button>
