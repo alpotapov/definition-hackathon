@@ -3,6 +3,13 @@
   height: 100%;
 }
 
+.TradePage-header {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  margin: 20px 0 0 0;
+}
+
 .TradePage-title {
   font: normal normal 200 88px/108px Montserrat, sans-serif;
   font-size: 88px;

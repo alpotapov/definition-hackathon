@@ -1,5 +1,11 @@
 @font-face {
   font-family: 'Montserrat';
+  font-weight: 600;
+  src: url(./assets/fonts/Montserrat-Bold.ttf) format('truetype');
+}
+
+@font-face {
+  font-family: 'Montserrat';
   font-weight: 400;
   src: url(./assets/fonts/Montserrat-Regular.ttf) format('truetype');
 }
@@ -58,7 +64,7 @@
 }
 
 h2 {
-  margin: 20px 0 0 0;
+  margin: 0;
 }
 
 .Content {

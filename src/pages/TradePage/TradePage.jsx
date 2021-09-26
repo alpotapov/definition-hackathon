@@ -2,6 +2,7 @@ import React from 'react';
 
 import usePolyPool from '../../hooks/usePolyPool';
 
+import CanTrade from '../../components/CanTrade/CanTrade';
 import TradeSettings from '../../components/TradeSettings/TradeSettings';
 import PriceChart from '../../components/PriceChart/PriceChart';
 
@@ -11,10 +12,12 @@ const TradePage = () => {
   const { isTrader } = usePolyPool();
   return (
     <div className="TradePage">
-      <h2 className="TradePage-title">
-        Tra<span className="TradePage-titleColored">de</span>
-      </h2>
-      <p>Can trade: {isTrader ? '👍' : '👎'}</p>
+      <div className="TradePage-header">
+        <h2 className="TradePage-title">
+          Tra<span className="TradePage-titleColored">de</span>
+        </h2>
+        <CanTrade isTrader={isTrader} />
+      </div>
       <div className="TradePage-columns">
         <div className="TradePage-leftColumn">
           <TradeSettings />
