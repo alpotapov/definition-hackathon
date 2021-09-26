@@ -10,6 +10,7 @@ const usePolyPool = () => {
   const { web3 } = useWeb3();
   // eslint-disable-next-line
   const [shareList, setShareList] = useState([]);
+  const [isTrader, setIsTrader] = useState(false);
 
   const fetchShareList = async () => {
     const polyPoolContract = new web3.eth.Contract(
@@ -44,14 +45,26 @@ const usePolyPool = () => {
     return price;
   };
 
+  const checkIsTrader = async () => {
+    const polyPoolContract = new web3.eth.Contract(
+      PolyPoolABI,
+      polyPoolAddress
+    );
+    const accounts = await web3.eth.getAccounts();
+    const trader = await polyPoolContract.methods.trader().call();
+
+    setIsTrader(accounts.includes(trader));
+  };
+
   useEffect(() => {
     if (!web3) {
       return;
     }
     fetchShareList();
+    checkIsTrader();
   }, [web3]);
 
-  return { shareList, getPrice };
+  return { shareList, getPrice, isTrader };
 };
 
 export default usePolyPool;
