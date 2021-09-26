@@ -2,35 +2,50 @@
 import React, { useState, useEffect } from 'react';
 import { Button, InputLabel, TextField } from '@mui/material';
 
-import { useDebounce } from 'use-debounce';
-import usePolynom from '../../hooks/usePolynom';
+import usePolyPool, { polyPoolAddress } from '../../hooks/usePolyPool';
+import useSimpleErc20 from '../../hooks/useSimpleErc20';
 
 import './AuctionPage.css';
 
 const AuctionPage = () => {
-  const { checkAddress } = usePolynom();
-  const [addressPool, setAddressPool] = useState('');
-  const [addressPoolDebounced] = useDebounce(addressPool, 1000);
-  const [isValidAddress, setIsValidAddress] = useState(true);
-  const onAddressPoolChange = (evt) => {
-    console.log({ evt: evt.target.value });
-    setAddressPool(evt.target.value);
-  };
-  useEffect(() => {
-    const runCheckAddress = async () => {
-      const addressExists = await checkAddress(addressPoolDebounced);
-      console.log({ exists: addressExists });
-      setIsValidAddress(addressExists);
-    };
-    console.log({ here: addressPoolDebounced });
-    runCheckAddress();
-  }, [addressPoolDebounced]);
-  // eslint-disable-next-line no-unused-vars
-  const [maxBid, setMaxBid] = useState(0);
+  const { maxBid, yourCurrentBid, doBid } = usePolyPool();
+  const { approve } = useSimpleErc20();
+
   const [yourBid, setYourBid] = useState(0);
+  const [isValidBid, setIsValidBid] = useState(true);
   const onYourBidChange = (evt) => {
+    setIsValidBid(true);
     setYourBid(evt.target.value);
   };
+
+  useEffect(() => {
+    setYourBid(yourCurrentBid);
+  }, [yourCurrentBid]);
+
+  const sendBid = async () => {
+    const numYourBid = Number.parseInt(yourBid, 10);
+    const numMaxBid = Number.parseInt(maxBid, 10);
+
+    if (numYourBid <= numMaxBid) {
+      console.log('send MORE!');
+      setIsValidBid(false);
+      return;
+    }
+
+    const result = await doBid(numYourBid);
+    console.log({ result });
+  };
+
+  const [approvedAmount, setApprovedAmount] = useState(0);
+  const onApprovedAmountChange = (evt) => {
+    setApprovedAmount(evt.target.value);
+  };
+  const sendApproved = async () => {
+    const numApprovedAmount = Number.parseInt(approvedAmount, 10);
+    const result = await approve(numApprovedAmount);
+    console.log({ approvedResult: result });
+  };
+
   return (
     <div className="AuctionPage">
       <h2 className="AuctionPage-title">
@@ -42,21 +57,21 @@ const AuctionPage = () => {
             <InputLabel id="addressPool">Address Pool</InputLabel>
             <TextField
               fullWidth
-              error={!isValidAddress}
               id="addressPool"
               variant="outlined"
-              value={addressPool}
-              onChange={onAddressPoolChange}
+              value={polyPoolAddress}
             />
             <InputLabel id="maxBid">Max Bid</InputLabel>
             <TextField
               fullWidth
+              disabled
               id="maxBid"
               variant="outlined"
               value={maxBid}
             />
             <InputLabel id="yourBid">Your Bid</InputLabel>
             <TextField
+              error={!isValidBid}
               fullWidth
               id="yourBid"
               variant="outlined"
@@ -64,11 +79,45 @@ const AuctionPage = () => {
               onChange={onYourBidChange}
             />
           </div>
+          <div className="AuctionPage-bidButton">
+            <Button
+              fullWidth
+              size="large"
+              variant="contained"
+              onClick={sendBid}
+            >
+              Bid
+            </Button>
+          </div>
+
+          <div className="AuctionPage-approveForm">
+            <h4>Pre-approve an amount to save gas fees</h4>
+            <InputLabel id="approvedAmount">Approved amount</InputLabel>
+            <TextField
+              error={!isValidBid}
+              fullWidth
+              id="approvedAmount"
+              variant="outlined"
+              value={approvedAmount}
+              onChange={onApprovedAmountChange}
+            />
+          </div>
+          <div className="AuctionPage-approveButton">
+            <Button
+              fullWidth
+              size="large"
+              variant="contained"
+              onClick={sendApproved}
+            >
+              Approve
+            </Button>
+          </div>
         </div>
         <div className="AuctionPage-rightColumn">
           <p>Equalize</p>
           <Button
-            className="TradeSettings-ctaButton"
+            fullWidth
+            className="AuctionPage-equalizeButton"
             size="large"
             variant="contained"
           >

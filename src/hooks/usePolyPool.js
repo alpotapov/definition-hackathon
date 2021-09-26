@@ -4,12 +4,14 @@ import useWeb3 from './useWeb3';
 
 import PolyPoolABI from './polypool.json';
 
-const polyPoolAddress = '0x8Bc9C1629f41b7126DC2Af1A734332Cbe8144680';
+export const polyPoolAddress = '0x8Bc9C1629f41b7126DC2Af1A734332Cbe8144680';
 
 const usePolyPool = () => {
   const { web3 } = useWeb3();
   const [shareList, setShareList] = useState([]);
   const [isTrader, setIsTrader] = useState(false);
+  const [maxBid, setMaxBid] = useState(0);
+  const [yourCurrentBid, setYourCurrentBid] = useState(0);
 
   const fetchShareList = async () => {
     const polyPoolContract = new web3.eth.Contract(
@@ -44,6 +46,35 @@ const usePolyPool = () => {
     return price;
   };
 
+  const fetchMaxBid = async () => {
+    const polyPoolContract = new web3.eth.Contract(
+      PolyPoolABI,
+      polyPoolAddress
+    );
+
+    const bid = await polyPoolContract.methods.maxBid().call();
+    console.log({ maxBid: bid });
+
+    setMaxBid(bid);
+  };
+
+  const fetchYourCurrentBid = async () => {
+    const polyPoolContract = new web3.eth.Contract(
+      PolyPoolABI,
+      polyPoolAddress
+    );
+
+    const accounts = await web3.eth.getAccounts();
+    if (accounts.length > 1) {
+      console.log('MORE THAN ONE ACCOUNT. Using the first');
+    }
+
+    const bid = await polyPoolContract.methods.bids(accounts[0]).call();
+    console.log({ yourBid: bid });
+
+    setYourCurrentBid(bid);
+  };
+
   const checkIsTrader = async () => {
     const polyPoolContract = new web3.eth.Contract(
       PolyPoolABI,
@@ -55,15 +86,60 @@ const usePolyPool = () => {
     setIsTrader(accounts.includes(trader));
   };
 
+  const doBid = async (value) => {
+    const polyPoolContract = new web3.eth.Contract(
+      PolyPoolABI,
+      polyPoolAddress
+    );
+
+    const accounts = await web3.eth.getAccounts();
+    const selectedAccount = accounts[0];
+
+    console.log({ value, selectedAccount });
+    const result = await polyPoolContract.methods
+      .doBid(value)
+      .send({ from: selectedAccount });
+
+    return result;
+  };
+
+  const approve = async (value) => {
+    const polyPoolContract = new web3.eth.Contract(
+      PolyPoolABI,
+      polyPoolAddress
+    );
+
+    const accounts = await web3.eth.getAccounts();
+    const selectedAccount = accounts[0];
+
+    console.log({ value });
+
+    const result = await polyPoolContract.methods
+      .approve(polyPoolAddress, value)
+      .send({ from: selectedAccount });
+
+    return result;
+  };
+
   useEffect(() => {
     if (!web3) {
       return;
     }
     fetchShareList();
     checkIsTrader();
+    fetchMaxBid();
+    fetchYourCurrentBid();
   }, [web3]);
 
-  return { shareList, getPrice, isTrader };
+  return {
+    shareList,
+    getPrice,
+    isTrader,
+    maxBid,
+    yourCurrentBid,
+    doBid,
+    approve,
+  };
 };
 
 export default usePolyPool;
