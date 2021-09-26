@@ -2,6 +2,8 @@
 import React, { useState, useEffect } from 'react';
 import { Button, InputLabel, TextField } from '@mui/material';
 
+import ApproveForm from '../../components/ApproveForm/ApproveForm';
+
 import usePolyPool, { polyPoolAddress } from '../../hooks/usePolyPool';
 import useSimpleErc20 from '../../hooks/useSimpleErc20';
 
@@ -90,28 +92,11 @@ const AuctionPage = () => {
             </Button>
           </div>
 
-          <div className="AuctionPage-approveForm">
-            <h4>Pre-approve an amount to save gas fees</h4>
-            <InputLabel id="approvedAmount">Approved amount</InputLabel>
-            <TextField
-              error={!isValidBid}
-              fullWidth
-              id="approvedAmount"
-              variant="outlined"
-              value={approvedAmount}
-              onChange={onApprovedAmountChange}
-            />
-          </div>
-          <div className="AuctionPage-approveButton">
-            <Button
-              fullWidth
-              size="large"
-              variant="contained"
-              onClick={sendApproved}
-            >
-              Approve
-            </Button>
-          </div>
+          <ApproveForm
+            approvedAmount={approvedAmount}
+            onApprovedAmountChange={onApprovedAmountChange}
+            sendApproved={sendApproved}
+          />
         </div>
         <div className="AuctionPage-rightColumn">
           <p>Equalize</p>

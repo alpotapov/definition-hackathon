@@ -14,12 +14,14 @@ import usePolyPool from '../../hooks/usePolyPool';
 
 import './TradeSettings.css';
 
-const TradeSettings = () => {
+// eslint-disable-next-line react/prop-types
+const TradeSettings = ({ setTokenToSell, tokenToSell }) => {
   const { shareList, getPrice, trade } = usePolyPool();
 
-  const [sellToken, setSellToken] = useState('');
+  const [sellToken, setSellToken] = useState(tokenToSell);
   const onSellTokenChange = (evt) => {
     console.log({ evt });
+    setTokenToSell(evt.target.value);
     setSellToken(evt.target.value);
   };
 
