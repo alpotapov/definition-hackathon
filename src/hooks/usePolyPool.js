@@ -8,7 +8,6 @@ const polyPoolAddress = '0x8Bc9C1629f41b7126DC2Af1A734332Cbe8144680';
 
 const usePolyPool = () => {
   const { web3 } = useWeb3();
-  // eslint-disable-next-line
   const [shareList, setShareList] = useState([]);
   const [isTrader, setIsTrader] = useState(false);
 
