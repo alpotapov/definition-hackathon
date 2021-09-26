@@ -33,7 +33,7 @@ const PriceChart = () => {
           let currentMaxValue = receivedChartData[0][1];
           const mapped = receivedChartData.map((item) => {
             const [block, value] = item;
-            if (value > maxValue) currentMaxValue = value;
+            if (value > currentMaxValue) currentMaxValue = value;
             if (currentMinValue > value) currentMinValue = value;
             return {
               block,
@@ -41,8 +41,11 @@ const PriceChart = () => {
             };
           });
           console.log({ mapped });
-          setMinValue(currentMinValue - 100);
-          setMaxValue(currentMaxValue + 100);
+          const margin = 50;
+          const minWithMargin = currentMinValue - margin;
+          const maxWithMargin = currentMaxValue + margin;
+          setMinValue(minWithMargin);
+          setMaxValue(maxWithMargin);
           setChartData(mapped);
         }
         // setChartData(receivedChartData);
