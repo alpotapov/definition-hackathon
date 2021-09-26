@@ -1,6 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import { useDebounce } from 'use-debounce';
-import { InputLabel, Select, MenuItem, TextField, Button } from '@mui/material';
+import {
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Button,
+  FormControl,
+} from '@mui/material';
 import SyncIcon from '@mui/icons-material/Sync';
 
 import usePolyPool from '../../hooks/usePolyPool';
@@ -15,6 +22,7 @@ const TradeSettings = () => {
     console.log({ evt });
     setSellToken(evt.target.value);
   };
+
   const [sellTokenValue, setSellTokenValue] = useState(0);
   const [sellTokenValueDebounced] = useDebounce(sellTokenValue, 1000);
   const onSellTokenValueChange = (evt) => {
@@ -41,71 +49,85 @@ const TradeSettings = () => {
 
   return (
     <div className="TradeSettings">
-      <div>
-        <InputLabel id="addressPool">Address Pool</InputLabel>
+      <FormControl fullWidth>
         <TextField
           fullWidth
           id="addressPool"
           variant="outlined"
           value={addressPool}
           onChange={onAddressPoolChange}
+          label="Address Pool"
         />
-      </div>
+      </FormControl>
       <div className="TradeSettings-columns">
         <div className="TradeSettings-sellColumn">
-          <InputLabel id="sellTokenSelectLabel">Sell</InputLabel>
-          <Select
-            labelId="sellTokenSelectLabel"
-            id="sellTokenSelect"
-            value={sellToken}
-            label="Sell"
-            onChange={onSellTokenChange}
-          >
-            {shareList.map((share) => (
-              <MenuItem key={share} value={share}>
-                {share}
-              </MenuItem>
-            ))}
-            <MenuItem value="" disabled>
-              0xERC20IN
-            </MenuItem>
-          </Select>
-          <InputLabel id="sellTokenValue">Value</InputLabel>
-          <TextField
-            id="sellTokenValue"
-            variant="outlined"
-            value={sellTokenValue}
-            onChange={onSellTokenValueChange}
-          />
+          <div className="TradeSettings-formItem">
+            <FormControl fullWidth>
+              <InputLabel id="sellTokenSelectLabel">Sell</InputLabel>
+              <Select
+                labelId="sellTokenSelectLabel"
+                id="sellTokenSelect"
+                value={sellToken}
+                label="Sell"
+                onChange={onSellTokenChange}
+              >
+                {shareList.map((share) => (
+                  <MenuItem key={share} value={share}>
+                    {share}
+                  </MenuItem>
+                ))}
+                <MenuItem value="" disabled>
+                  0xERC20IN
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+          <div className="TradeSettings-formItem">
+            <TextField
+              id="sellTokenValue"
+              variant="outlined"
+              value={sellTokenValue}
+              onChange={onSellTokenValueChange}
+              label="Value"
+            />
+          </div>
         </div>
         <div className="TradeSettings-changeIconColumn">
           <SyncIcon />
         </div>
         <div className="TradeSettings-buyColumn">
-          <InputLabel id="buyTokenSelectLabel">Buy</InputLabel>
-          <Select
-            labelId="buyTokenSelectLabel"
-            id="buyTokenSelect"
-            value={buyToken}
-            label="Buy"
-            onChange={onBuyTokenChange}
-          >
-            {shareList.map((share) => (
-              <MenuItem key={share} value={share}>
-                {share}
-              </MenuItem>
-            ))}
-            <MenuItem value="" disabled>
-              0xERC20OUT
-            </MenuItem>
-          </Select>
-          <InputLabel id="buyTokenValue">Value</InputLabel>
-          <TextField
-            disabled
-            id="buyTokenValue"
-            variant="outlined"
-            value={buyTokenValue}
-          />
+          <div className="TradeSettings-formItem">
+            <FormControl fullWidth>
+              <InputLabel id="buyTokenSelectLabel">Buy</InputLabel>
+              <Select
+                labelId="buyTokenSelectLabel"
+                id="buyTokenSelect"
+                value={buyToken}
+                label="Buy"
+                onChange={onBuyTokenChange}
+              >
+                {shareList.map((share) => (
+                  <MenuItem key={share} value={share}>
+                    {share}
+                  </MenuItem>
+                ))}
+                <MenuItem value="" disabled>
+                  0xERC20OUT
+                </MenuItem>
+              </Select>
+            </FormControl>
+          </div>
+          <div className="TradeSettings-formItem">
+            <FormControl fullWidth>
+              <TextField
+                disabled
+                id="buyTokenValue"
+                variant="outlined"
+                value={buyTokenValue}
+                label="Value"
+              />
+            </FormControl>
+          </div>
         </div>
       </div>
       <div className="TradeSettings-prices">

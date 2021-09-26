@@ -15,7 +15,7 @@
 }
 
 #sellTokenSelect {
-  width: 80px;
+  max-width: 120px;
 }
 
 .TradeSettings-changeIconColumn {
@@ -29,10 +29,15 @@
   display: flex;
   flex-direction: column;
   justify-content: space-evenly;
+  flex-grow: 1;
 }
 
 #buyTokenSelect {
-  width: 80px;
+  max-width: 120px;
+}
+
+.TradeSettings-formItem {
+  margin: 20px 0 0 0;
 }
 
 .TradeSettings-prices {

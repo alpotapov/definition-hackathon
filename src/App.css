@@ -52,6 +52,11 @@
   margin: 0 40px 0 40px;
 }
 
+.Header-linkActive {
+  border-bottom: 1px solid #000000;
+  padding: 10px;
+}
+
 .Content {
   max-width: 900px;
   min-width: 900px;
