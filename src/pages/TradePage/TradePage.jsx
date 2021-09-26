@@ -7,11 +7,11 @@ import './TradePage.css';
 
 const TradePage = () => (
   <div className="TradePage">
+    <h2 className="TradePage-title">
+      Tra<span className="TradePage-titleColored">de</span>
+    </h2>
     <div className="TradePage-columns">
       <div className="TradePage-leftColumn">
-        <h2 className="TradePage-title">
-          Tra<span className="TradePage-titleColored">de</span>
-        </h2>
         <TradeSettings />
       </div>
       <div className="TradePage-rightColumn">

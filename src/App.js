@@ -5,6 +5,7 @@ import { client } from 'defi-sdk';
 import CreateSwapPage from './pages/CreateSwapPage/CreateSwapPage';
 import LiquidityPage from './pages/LiquidityPage/LiquidityPage';
 import TradePage from './pages/TradePage/TradePage';
+import AuctionPage from './pages/AuctionPage/AuctionPage';
 
 import './App.css';
 import logo from './assets/logo.svg';
@@ -37,26 +38,32 @@ export default function App() {
             <Link className="Header-link" to="/trade">
               Trade
             </Link>
-            <Link className="Header-link" to="/action">
-              Action
+            <Link className="Header-link" to="/auction">
+              Auction
             </Link>
           </nav>
         </div>
 
         <Switch>
           <Route path="/liquidity">
-            <LiquidityPage />
+            <div className="Content">
+              <LiquidityPage />
+            </div>
           </Route>
           <Route path="/trade">
             <div className="Content">
               <TradePage />
             </div>
           </Route>
-          <Route path="/action">
-            <ActionPage />
+          <Route path="/auction">
+            <div className="Content">
+              <AuctionPage />
+            </div>
           </Route>
           <Route path="/">
-            <CreateSwapPage />
+            <div className="Content">
+              <CreateSwapPage />
+            </div>
           </Route>
         </Switch>
 
@@ -69,5 +76,3 @@ export default function App() {
     </Router>
   );
 }
-
-const ActionPage = () => <h2>Action</h2>;

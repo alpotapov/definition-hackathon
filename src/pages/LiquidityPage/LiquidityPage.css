@@ -1,0 +1,20 @@
+.LiquidityPage {
+  max-width: 900px;
+  height: 100%;
+}
+
+.LiquidityPage-title {
+  font: normal normal 200 88px/108px Montserrat, sans-serif;
+  font-size: 88px;
+  text-transform: uppercase;
+}
+
+.LiquidityPage-titleColored {
+  color: #7B61FF;
+}
+
+.LiquidityPage-columns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}

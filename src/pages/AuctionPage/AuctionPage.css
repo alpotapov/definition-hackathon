@@ -1,0 +1,20 @@
+.AuctionPage {
+  max-width: 900px;
+  height: 100%;
+}
+
+.AuctionPage-title {
+  font: normal normal 200 88px/108px Montserrat, sans-serif;
+  font-size: 88px;
+  text-transform: uppercase;
+}
+
+.AuctionPage-titleColored {
+  color: #7B61FF;
+}
+
+.AuctionPage-columns {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+}
