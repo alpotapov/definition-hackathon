@@ -137,10 +137,6 @@ const TradeSettings = ({ setTokenToSell, tokenToSell }) => {
           </div>
         </div>
       </div>
-      <div className="TradeSettings-prices">
-        <div>Market price: 0.0033 BTC</div>
-        <div>Pool price: 0.00021 BTC</div>
-      </div>
       <div className="TradeSettings-cta">
         <Button
           className="TradeSettings-ctaButton"

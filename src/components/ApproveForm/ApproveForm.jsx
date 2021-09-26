@@ -23,11 +23,16 @@ const ApproveForm = ({
         value={approvedAmount}
         onChange={onApprovedAmountChange}
       />
-    </div>
-    <div className="ApproveForm-approveButton">
-      <Button fullWidth size="large" variant="contained" onClick={sendApproved}>
-        Approve
-      </Button>
+      <div className="ApproveForm-approveButton">
+        <Button
+          fullWidth
+          size="large"
+          variant="contained"
+          onClick={sendApproved}
+        >
+          Approve
+        </Button>
+      </div>
     </div>
   </>
 );

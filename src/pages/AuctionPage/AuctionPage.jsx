@@ -56,7 +56,7 @@ const AuctionPage = () => {
       </h2>
       <div className="AuctionPage-columns">
         <div className="AuctionPage-leftColumn">
-          <div>
+          <div className="AuctionPage-well">
             <InputLabel id="addressPool">Address Pool</InputLabel>
             <TextField
               fullWidth
@@ -81,16 +81,16 @@ const AuctionPage = () => {
               value={yourBid}
               onChange={onYourBidChange}
             />
-          </div>
-          <div className="AuctionPage-bidButton">
-            <Button
-              fullWidth
-              size="large"
-              variant="contained"
-              onClick={sendBid}
-            >
-              Bid
-            </Button>
+            <div className="AuctionPage-bidButton">
+              <Button
+                fullWidth
+                size="large"
+                variant="contained"
+                onClick={sendBid}
+              >
+                Bid
+              </Button>
+            </div>
           </div>
 
           <ApproveForm
