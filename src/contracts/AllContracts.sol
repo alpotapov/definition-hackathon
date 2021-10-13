@@ -1,6 +1,6 @@
 pragma solidity ^0.6.0;
 
-// "SPDX-License-Identifier: <SPDX-License>" to each source file. Use "SPDX-License-Identifier: UNLICENSED"
+// "SPDX-License-Identifier: UNLICENSED"
 
 interface IERC20 {
     function totalSupply() external view returns (uint256);
@@ -32,10 +32,12 @@ contract ERC20PolyPool is IERC20 {
     uint256 public shareIter = 0;
     
     mapping(uint256 => address) public shareAddress;
-    mapping(address => bool) public share;
+    mapping(address => uint256) public share;
     
-    bool fixShare;
-    address owner;
+    bool public fixMe = false;
+    
+    bool public fixShare = false;
+    address public owner;
     
     bool public flashLock = false;
     
@@ -141,7 +143,7 @@ contract ERC20PolyPool is IERC20 {
     function equalize()
         public
     {
-        require(block.number - equalizerBlock > settings[7]);
+        require(block.number - equalizerBlock > settings[11]);
         
         equalizerBlock = block.number;
         
@@ -153,23 +155,23 @@ contract ERC20PolyPool is IERC20 {
         public
     {
         require(!flashLock);
-        require(trader == msg.sender);
-        require(share[_tokenAddressIn]);
-        require(share[_tokenAddressOut]);
+        require((settings[13] < 2) || (trader == msg.sender));
+        require(share[_tokenAddressIn] > 0);
+        require(share[_tokenAddressOut] > 0);
         
         IERC20 ercIn = IERC20(_tokenAddressIn);
         IERC20 ercOut = IERC20(_tokenAddressOut);
         
         require(ercIn.transferFrom(msg.sender, address(this),_value));
-        uint256 outVal = (_value.mul(ercOut.balanceOf(address(this)))).div(ercIn.balanceOf(address(this)));
+        uint256 outVal = (_value.mul((ercOut.balanceOf(address(this))).div(share[_tokenAddressOut]))).div((ercIn.balanceOf(address(this))).div(share[_tokenAddressIn]));
         
-        uint256 fee = (outVal.div(settings[3]));
-        if(settings[4] > 1)
-            fee = fee.add(((outVal.mul(outVal)).div(ercOut.balanceOf(address(this)))).div(settings[5]));
-        
+        uint256 fee = (((outVal).mul(settings[4])).div(settings[0]));
+        if(settings[5] > 1)
+            fee = fee.add((((outVal.mul(outVal)).div((ercOut.balanceOf(address(this))).div(share[_tokenAddressOut]))).mul(settings[6])).div(settings[7]));
+ 
         outVal = outVal.sub(fee);
         
-        uint256 swapfee = outVal.div(settings[9]);
+        uint256 swapfee = (outVal).mul(settings[8]).div(settings[0]);
         outVal = outVal.sub(swapfee);
         fee = fee.add(swapfee);
         
@@ -192,19 +194,22 @@ contract ERC20PolyPool is IERC20 {
     
     function getPrice(uint256 _value, address _tokenAddressIn, address _tokenAddressOut) public view returns (uint256)
     {
-        require(share[_tokenAddressIn]);
-        require(share[_tokenAddressOut]);
+        require(share[_tokenAddressIn] > 0);
+        require(share[_tokenAddressOut] > 0);
         
         IERC20 ercIn = IERC20(_tokenAddressIn);
         IERC20 ercOut = IERC20(_tokenAddressOut);
         
-        uint256 outVal = (_value.mul(ercOut.balanceOf(address(this)))).div(ercIn.balanceOf(address(this)));
+        uint256 outVal = (_value.mul((ercOut.balanceOf(address(this))).div(share[_tokenAddressOut]))).div((ercIn.balanceOf(address(this))).div(share[_tokenAddressIn]));
         
-        uint256 fee = (outVal.div(settings[3]));
-        if(settings[4] > 1)
-            fee = fee.add(((outVal.mul(outVal)).div(ercOut.balanceOf(address(this)))).div(settings[5]));
+        uint256 fee = (((outVal).mul(settings[4])).div(settings[0]));
+        if(settings[5] > 1)
+            fee = fee.add((((outVal.mul(outVal)).div((ercOut.balanceOf(address(this))).div(share[_tokenAddressOut]))).mul(settings[6])).div(settings[7]));
         
         outVal = outVal.sub(fee);
+        
+        uint256 swapfee = (outVal).mul(settings[8]).div(settings[0]);
+        outVal = outVal.sub(swapfee);
         return outVal;
     }
     
@@ -213,16 +218,27 @@ contract ERC20PolyPool is IERC20 {
         require(shareIter > 0);
         require(!flashLock);
         
-        uint256 t_value = _value.sub(_value.div(settings[0]));
+        uint256 t_value = _value.sub(((_value).mul(settings[1])).div(settings[0]));
         for(uint256 i = 0; (i < shareIter); i++)
         {
             IERC20 liquidityToken = IERC20(shareAddress[i]);
-            uint256 need = _value.mul(liquidityToken.balanceOf(address(this))).div(totalSupply_);
+            uint256 need = _value.mul((liquidityToken.balanceOf(address(this))).mul(share[shareAddress[i]])).div(totalSupply_);
             require(liquidityToken.transferFrom(msg.sender, address(this), need));
             
             totalSupply_ = totalSupply_.add(t_value);
             balances[msg.sender] = balances[msg.sender].add(t_value);
         }
+    }
+    
+    function getNewTokenPrice(uint256 _value, address _address) public view returns (uint256)
+    {
+        require(shareIter > 0);
+        require(share[_address] > 0);
+        
+        IERC20 liquidityToken = IERC20(_address);
+        uint256 need = _value.mul((liquidityToken.balanceOf(address(this))).mul(share[_address])).div(totalSupply_);
+        
+        return need;
     }
     
     function getLiquidity(uint256 _value) public
@@ -233,7 +249,7 @@ contract ERC20PolyPool is IERC20 {
         IERC20 auToken = IERC20(auction);
         uint256 needSend = _value.mul(auToken.balanceOf(address(this))).div(totalSupply_);
         
-        needSend = needSend.sub(needSend.div(settings[2]));
+        needSend = needSend.sub(((needSend).mul(settings[3])).div(settings[0]));
         require(auToken.transfer(msg.sender,needSend));
         
         for(uint256 i = 0; (i < shareIter); i++)
@@ -244,10 +260,34 @@ contract ERC20PolyPool is IERC20 {
             balances[msg.sender] = balances[msg.sender].sub(_value);
             totalSupply_ = totalSupply_.sub(_value);
             
-            need = need.sub(need.div(settings[1]));
+            need = need.sub(((need).mul(settings[2])).div(settings[0]));
             
             require(liquidityToken.transfer(msg.sender,need));
         }
+    }
+    
+    function getLiquidity(uint256 _value, address _address) public view returns (uint256)
+    {
+        require(shareIter > 0);
+        
+        if(_address == auction)
+        {
+            IERC20 auToken = IERC20(auction);
+            uint256 needSend = _value.mul(auToken.balanceOf(address(this))).div(totalSupply_);
+            
+            return needSend;
+        }
+        else
+        {
+            require(share[_address] > 0);
+            
+            IERC20 liquidityToken = IERC20(_address);
+            uint256 need = _value.mul(liquidityToken.balanceOf(address(this))).div(totalSupply_);
+            need = need.sub(((need).mul(settings[2])).div(settings[0]));
+            
+            return need;
+        }
+
     }
     
     function wait(uint256 _value) public
@@ -262,7 +302,7 @@ contract ERC20PolyPool is IERC20 {
     {
         require(!flashLock);
         require(shareIter > 0);
-        require(waitBlock[msg.sender] + settings[6] > block.number);
+        require(waitBlock[msg.sender] + settings[10] > block.number);
         
         balances[msg.sender] = balances[msg.sender].add(waitValue[msg.sender]);
         uint256 _value = waitValue[msg.sender];
@@ -272,7 +312,7 @@ contract ERC20PolyPool is IERC20 {
         IERC20 auToken = IERC20(auction);
         uint256 needSend = _value.mul(auToken.balanceOf(address(this))).div(totalSupply_);
         
-        needSend = needSend.sub(needSend.div(settings[2]));
+        needSend = needSend.sub(((needSend).mul(settings[3])).div(settings[0]));
         require(auToken.transfer(msg.sender,needSend));
         
         for(uint256 i = 0; (i < shareIter); i++)
@@ -284,6 +324,28 @@ contract ERC20PolyPool is IERC20 {
             totalSupply_ = totalSupply_.sub(_value);
             
             require(liquidityToken.transfer(msg.sender,need));
+        }
+    }
+    
+    function getLiquidityAfterTime(uint256 _value, address _address) public view returns (uint256)
+    {
+       require(shareIter > 0);
+        
+        if(_address == auction)
+        {
+            IERC20 auToken = IERC20(auction);
+            uint256 needSend = _value.mul(auToken.balanceOf(address(this))).div(totalSupply_);
+            
+            return needSend;
+        }
+        else
+        {
+            require(share[_address] > 0);
+            
+            IERC20 liquidityToken = IERC20(_address);
+            uint256 need = _value.mul(liquidityToken.balanceOf(address(this))).div(totalSupply_);
+            
+            return need;
         }
     }
     
@@ -306,7 +368,7 @@ contract ERC20PolyPool is IERC20 {
         //transfer funds to the receiver
         erc.transfer(userPayable, _amount);
         
-        uint256 amountFee = (_amount).div(settings[8]);
+        uint256 amountFee = ((_amount).mul(settings[9])).div(settings[0]);
 
         //execute action of the receiver
         receiver.executeOperation(address(this), _amount, amountFee, _params);
@@ -327,28 +389,37 @@ contract ERC20PolyPool is IERC20 {
         owner = newOwner;
     }
     
-    function changeShare(address _tokenAddress, bool _last) public
+    function changeShare(address _tokenAddress, uint256 _value, bool _last) public
     {
+        require(!fixMe);
         require(!fixShare);
         require(msg.sender == owner);
+        require(_value > 0);
         
-        if(!share[_tokenAddress])
+        if(share[_tokenAddress] == 0)
         {
             shareAddress[shareIter] = _tokenAddress;
             shareIter++;
         }
         
-        share[_tokenAddress] = true;
+        share[_tokenAddress] = _value;
         fixShare = _last;
     }
     
     function setSettings(uint256 _value, uint256 _setting, bool _fix) public
     {
+        require(!fixMe);
         require(!fixSettings[_setting]);
         require(msg.sender == owner);
+        require(_value != 0);
         
-        settings[_setting] = _value.add(1);
+        settings[_setting] = _value;
         fixSettings[_setting] = _fix;
+    }
+    
+    function fixAll() public
+    {
+        fixMe = true;
     }
 }
 
@@ -374,16 +445,20 @@ contract Polynom {
         
         superUser = msg.sender;
         
-        settings[0] = 100;
-        settings[1] = 200;
-        settings[2] = 100;
-        settings[3] = 200;
-        settings[4] = 2;
-        settings[5] = 10;
-        settings[6] = 200;
-        settings[7] = 2000;
-        settings[8] = 2000;
-        settings[9] = 1000;
+        settings[0]  = 1000;
+        settings[1]  = 10;
+        settings[2]  = 20;
+        settings[3]  = 200;
+        settings[4]  = 5;
+        settings[5]  = 2;
+        settings[6]  = 1;
+        settings[7]  = 5;
+        settings[8]  = 5;
+        settings[9]  = 10000;
+        settings[10] = 10000;
+        settings[11] = 10000;
+        settings[12] = 10000;
+        settings[13] = 2;
         
         reserve = _reserve;
     }
@@ -398,7 +473,7 @@ contract Polynom {
 
 	        mapIter++;
 	        
-	        for(uint8 i = 0; i < 10; i++)
+	        for(uint8 i = 0; i < 14; i++)
 	        {
 	            erc20a.setSettings(settings[i],i,false);
 	        }
